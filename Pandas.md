@@ -71,6 +71,13 @@ print(df.dtypes)
 ```
 ---
 ## Importer/export
+
+Pour Forcer PAndas à afficher toutes les colonnes
+```python
+pd.set_option('display.max_columns', None)
+```
+
+
 ### Lecture de fichier texte ou excel 
 
 | options        | spécifie le séparateur                         |
