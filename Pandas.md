@@ -76,6 +76,7 @@ print(df.dtypes)
 | options        | spécifie le séparateur                         |
 | -------------- | ---------------------------------------------- |
 | `sep = ,`      | <font color='orange'>par défaut</font> virgule |
+| `sep = \t`     | tabulation  (tab-separated values, SAP, Excel) |
 | `sep = r’\s+’` | plusieurs espaces                              |
 | `sep = ;`      | point virgule                                  |
 
@@ -113,7 +114,7 @@ nom_dataframe = pd.read_csv('nom_du_fichier.csv', skiprows=1, header = None)
 
 
 #### option `index_col`
-Spécifie quelle colonnedu dataset correspond à l'index
+Spécifie quelle colonne du dataset correspond à l'index
 il est possible d'avoir plusieurs index :
 ```python
 nom_dataframe = pd.read_csv('nom_du_fichier.csv', index_col = 0 )
