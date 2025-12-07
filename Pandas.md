@@ -216,8 +216,8 @@ mon_dataframe.to_csv("mes_resultats.csv", columns=["colonne_1", "colonne_5"])
 ## Valeur manquante : `NaN` vs. `NA`
 
 
-- **NaN** (`Not a Number`) vient de **NumPy** : valeur flottante limité aux **données numériques**.
-- **NA** (`Not Available`) : pour les **types non numériques** (textes, catégories, etc.).
+- **NaN** (`Not a Number`) de **NumPy** : valeur flottante limité aux **données numériques**.
+- **NA** (`Not Available`) de **Pandas**: pour les **types non numériques** (textes, catégories, etc.).
 
 
 Pandas recommande d’utiliser **`pd.NA`** pour une meilleure gestion des données manquantes :<br>
@@ -237,6 +237,22 @@ Pandas recommande d’utiliser **`pd.NA`** pour une meilleure gestion des donné
 |Conversion|Convertit les colonnes en `float`|Garde le type d'origine (ex: `Int64`, `String`)|
 |Support pour les booléens|Peut causer des erreurs|Compatible|
 | **Type de données** | Généralement `float`        | `pandas._libs.missing.NAType` (nullable)           |
+
+
+| Caractéristique                       | `NaN` (`numpy.nan`)                        | `NA` (`pd.NA`)                                                     |
+| ------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------ |
+| **Type**                              | `float`                                    | `pandas._libs.missing.NAType` (nullable)                           |
+| **Utilisation principale**            | Données numériques                         | Données avec types *nullable* : `Int64`, `boolean`, `string`, etc. |
+| **Comportement logique**              | `np.nan != np.nan`                         | `pd.NA == pd.NA` → renvoie **`pd.NA`** (indéterminé)               |
+| **Comparaison (`==`)**                | Toujours `False` (même `np.nan == np.nan`) | Renvoie `pd.NA`, pas `True`                                        |
+| **Opérations mathématiques**          | OK → résultat : `nan`                      | Souvent **erreur** (`TypeError`)                                   |
+| **Support des dtypes nullable**       | ❌ Non                                      | ✔️ Oui                                                             |
+| **Détecté par `isna()` / `isnull()`** | ✔️ Oui                                     | ✔️ Oui                                                             |
+| **Fonctionne avec `fillna()`**        | ✔️                                         | ✔️                                                                 |
+| **Effet sur les dtypes**              | Force les colonnes en `float`              | Garde le type nullable d’origine (`Int64`, `boolean`, `string`)    |
+| **Compatibilité booléens**            | Problématique                              | Compatible avec `BooleanDtype()`                                   |
+| **Types de données typiques**         | Floats                                     | Nullable Pandas types                                              |
+
 
 
 ➡️ Pour la data science classique : np.nan suffit
