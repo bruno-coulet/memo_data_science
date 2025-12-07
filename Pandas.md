@@ -246,6 +246,20 @@ Pandas recommande d’utiliser **`pd.NA`** pour une meilleure gestion des donné
 Contrairement à **Numpy**, **`pandas.DataFrame.sum()` ignore les `NaN`par défaut** :<br>
 calcule la somme en ignorant les `NaN`comme `np.nansum()`
 
+### 'Na' et le machine learning
+Les bibliothèques ML attendent presque toutes des NaN :
+- scikit-learn
+- XGBoost
+- LightGBM
+- CatBoost
+- TensorFlow / Keras
+- PyTorch
+-statsmodels
+
+Toutes s’attendent explicitement à recevoir des `floats` et des `np.nan` pour représenter les valeurs manquantes<br>
+`pd.NA` n’est pas reconnu dans la majorité des modèles.
+
+
 
 #### `NaN` (`numpy.nan`)
 
