@@ -76,6 +76,65 @@ print(df.dtypes)
 ```
 ---
 ## Importer/export
+
+Lors de l'import, Pandas remplace automatiquement les valeurs manquantes par des `Nan`
+### Valeurs manquantes `NaN` et `Na`
+
+- **`NaN`** : Valeur flottante pour des données manquantes dans les **types numériques**.
+- **`NA`** : Valeur manquante pour les **types non numériques** (textes, catégories, etc.).
+
+valeur spéciale qui représente **"rien"** ou **"valeur manquante"**
+
+|                     | **`NaN`** (Not a Number)                       | **`NA`** (Not Available)                                                |
+| ------------------- | ---------------------------------------------- | ----------------------------------------------------------------------- |
+| **Type**            | Float                                          | Nullable (peut être pour `int`, `str`, etc.)                            |
+| **Utilisation**     | Principalement pour les données **numériques** | Principalement pour les données **catégorielles** ou **non numériques** |
+| **Comportement**    | `NaN != NaN`                                   | `NA == NA`                                                              |
+| **Type de données** | Généralement `float`                           | `pandas._libs.missing.NAType` (nullable)                                |
+
+| NaN                           | Not a Number                                         |
+| ----------------------------- | ---------------------------------------------------- |
+| `NaN != NaN`                  | Deux `NaN` ne sont **jamais égaux** entre eux        |
+| `type(np.nan)`                | `float`                                              |
+| `pd.isna(x)`<br>`np.isnan(x)` | Teste si une valeur est un `NaN`                     |
+| `np.nansum()`                 | somme de tous les éléments en **ignorant** les `NaN` |
+`Na`  
+- utilisé pour des **données non numériques** ou **catégorielles** ou **`object`**, `str`
+-  fait partie du type `pd.NA`, pour gérer de manière uniforme les valeurs manquantes.
+
+`fillna` remplace tous les NaN par :
+
+```python
+# 0
+df.fillna(0)
+# la dernière valeur connue (forward fill)
+df.fillna(method='ffill')
+# la prochaine valeur connue (backward fill)
+df.fillna(method='bfill')
+# la moyenne de chaque colonne
+df.fillna(df.mean())
+```
+
+DataFrame de 3 colonnes, 4 lignes, avec des valeurs manquantes :
+```python
+df = pd.DataFrame({
+    'A': [1, 2, np.nan, 4],
+    'B': [np.nan, 2, 3, np.nan],
+    'C': [1, np.nan, np.nan, 4]
+})
+```
+
+	Original        ->        ffill            ->        bfill
+
+| A   | B   | C   |     | A   | B   | C   |     | A   | B   | C   |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |     |     |     |
+| 1   | NaN | 1   | ->  | 1   | Nan | 1   |     | 1   | 2   | 1   |
+| 2   | 2   | NaN |     | 2   | 2   | 1   |     | 2   | 2   | 4   |
+| NaN | 3   | NaN |     | 2   | 3   | 1   |     | 4   | 3   | 4   |
+| 4   | NaN | 4   |     | 4   | 3   |     |     | 4   | NaN | 4   |
+
+
 ### Lecture de fichier texte ou excel 
 
 | options        | spécifie le séparateur                         |
@@ -190,7 +249,7 @@ resultats = pd.read_sql(requete, con=connexion)
 resultats.head()
 ```
 
-### Lecture de fichier au format [[JSON]]
+### Lecture de fichier au format .JSON
 format texte pour l'échange de données de manière structurée et légère
 
 ```python
