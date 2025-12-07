@@ -224,21 +224,6 @@ Pandas recommande d’utiliser **`pd.NA`** pour une meilleure gestion des donné
 **`pd.NA`** est plus flexible et fonctionne avec les types Pandas (`Int64`, `String`, `Boolean`).
   
 
-|Caractéristique|`NaN` (`numpy.nan`)|`NA` (`pd.NA`)|
-|------------|----------------|--------------------|
-|Type|`float`|`pd.NA` type nullable Pandas<br> (peut être pour `int`, `str`, etc.)|
-|Utilisé pour| données **numériques** |Principalement pour les données **catégorielles** ou **non numériques**|
-| **Comportement**    | `NaN != NaN`                          | `NA == NA`                                   |
-|Comparaison (`==`)|Toujours `False`, même `np.nan == np.nan`|Supporte `pd.NA == pd.NA` (renvoie `pd.NA`)|
-| Opérations mathématiques        | OK           | souvent erreur       |
-| Supporte dtypes nullable Pandas | ❌ non        | ✔️ oui               |
-| Détecté par `isna()`            | ✔️ oui       | ✔️ oui               |
-| Fonctionne dans `fillna()`      | ✔️           | ✔️                   |
-|Conversion|Convertit les colonnes en `float`|Garde le type d'origine (ex: `Int64`, `String`)|
-|Support pour les booléens|Peut causer des erreurs|Compatible|
-| **Type de données** | Généralement `float`        | `pandas._libs.missing.NAType` (nullable)           |
-
-
 | Caractéristique                       | `NaN` (`numpy.nan`)                        | `NA` (`pd.NA`)                                                     |
 | ------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------ |
 | **Type**                              | `float`                                    | `pandas._libs.missing.NAType` (nullable)                           |
