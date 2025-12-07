@@ -231,9 +231,9 @@ Pandas recommande d’utiliser **`pd.NA`** pour une meilleure gestion des donné
 | **Comportement logique**              | `np.nan != np.nan`                         | `pd.NA == pd.NA` → renvoie **`pd.NA`** (indéterminé)               |
 | **Comparaison (`==`)**                | Toujours `False` (même `np.nan == np.nan`) | Renvoie `pd.NA`, pas `True`                                        |
 | **Opérations mathématiques**          | OK → résultat : `nan`                      | Souvent **erreur** (`TypeError`)                                   |
-| **Support des dtypes nullable**       | ❌ Non                                      | ✔️ Oui                                                             |
-| **Détecté par `isna()` / `isnull()`** | ✔️ Oui                                     | ✔️ Oui                                                             |
-| **Fonctionne avec `fillna()`**        | ✔️                                         | ✔️                                                                 |
+| **Support des dtypes nullable**       | ❌ Non                                      | ✅Oui                         |
+| **Détecté par `isna()` / `isnull()`** | ✅Oui                                     | ✅ Oui                          |
+| **Fonctionne avec `fillna()`**        | ✅                                        | ✅ Oui                          |
 | **Effet sur les dtypes**              | Force les colonnes en `float`              | Garde le type nullable d’origine (`Int64`, `boolean`, `string`)    |
 | **Compatibilité booléens**            | Problématique                              | Compatible avec `BooleanDtype()`                                   |
 | **Types de données typiques**         | Floats                                     | Nullable Pandas types                                              |
@@ -246,7 +246,7 @@ Pandas recommande d’utiliser **`pd.NA`** pour une meilleure gestion des donné
 Contrairement à **Numpy**, **`pandas.DataFrame.sum()` ignore les `NaN`par défaut** :<br>
 calcule la somme en ignorant les `NaN`comme `np.nansum()`
 
-### Machine learning `NaN`✔️ , `Na`❌ 
+### Machine learning `NaN`✅, `Na`❌ 
 Les bibliothèques ML attendent presque toutes des `NaN` :
 - scikit-learn
 - XGBoost
