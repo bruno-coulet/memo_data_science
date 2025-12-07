@@ -226,19 +226,39 @@ indicateurs de valeurs manquantes :
 - Pandas recommande d’utiliser **`pd.NA`** pour une meilleure gestion des données manquantes.
 
 |Caractéristique|`NaN` (`numpy.nan`)|`NA` (`pd.NA`)|
-|---|---|---|
-|Type|`float`|`pd.NA`|
-|Utilisé pour|Valeurs numériques manquantes|Valeurs numériques et non numériques|
+|------------|----------------|--------------------|
+|Type|`float`|`pd.NA` Nullable (peut être pour `int`, `str`, etc.)|
+|Utilisé pour| données **numériques** |Principalement pour les données **catégorielles** ou **non numériques**|
+| **Comportement**    | `NaN != NaN`                          | `NA == NA`                                   |
 |Comparaison (`==`)|Toujours `False`, même `np.nan == np.nan`|Supporte `pd.NA == pd.NA` (renvoie `NA`)|
 |Conversion|Convertit les colonnes en `float`|Garde le type d'origine (ex: `Int64`, `String`)|
 |Support pour les booléens|Peut causer des erreurs|Compatible|
+| **Type de données** | Généralement `float`        | `pandas._libs.missing.NAType` (nullable)           |
+
+
+
+
 Contrairement à [[Numpy]], **`pandas.DataFrame.sum()` ignore les `NaN`par défaut** : calcule la somme en ignorant les `NaN`comme `np.nansum()`
+
+
 #### NaN (`numpy.nan`)
 
 - `Not a Number`
 	utilisé principalement pour représenter des valeurs numériques manquantes.
 - **Type** : `float`
 - **Provenance** : `numpy.nan`
+
+
+| NaN                           | Not a Number                                         |
+| ----------------------------- | ---------------------------------------------------- |
+| `NaN != NaN`                  | Deux `NaN` ne sont **jamais égaux** entre eux        |
+| `type(np.nan)`                | `float`                                              |
+| `pd.isna(x)`<br>`np.isnan(x)` | Teste si une valeur est un `NaN`                     |
+| `np.nansum()`                 | somme de tous les éléments en **ignorant** les `NaN` |
+`Na`  
+- utilisé pour des **données non numériques** ou **catégorielles** ou **`object`**, `str`
+-  fait partie du type `pd.NA`, pour gérer de manière uniforme les valeurs manquantes.
+  
 
     ```python
 df = pd.DataFrame({"A": [1, 2, np.nan, 4]})
@@ -269,6 +289,8 @@ df = pd.DataFrame({"A": [1, 2, pd.NA, 4]})
     2  <NA>
     3    4
     ```
+
+	
 ### Gestion des NaN et NA
 
 Vérifier la présence de valeurs manquantes
@@ -284,6 +306,38 @@ Remplacer les valeurs manquantes
 ```python
 df.fillna(0)  # Remplace NaN ou NA par 0
 ```
+
+`fillna` remplace tous les NaN par :
+
+```python
+# 0
+df.fillna(0)
+# la dernière valeur connue (forward fill)
+df.fillna(method='ffill')
+# la prochaine valeur connue (backward fill)
+df.fillna(method='bfill')
+# la moyenne de chaque colonne
+df.fillna(df.mean())
+```
+
+DataFrame de 3 colonnes, 4 lignes, avec des valeurs manquantes :
+```python
+df = pd.DataFrame({
+    'A': [1, 2, np.nan, 4],
+    'B': [np.nan, 2, 3, np.nan],
+    'C': [1, np.nan, np.nan, 4]
+})
+```
+
+	Original        ->        ffill            ->        bfill
+
+| A   | B   | C   |     | A   | B   | C   |     | A   | B   | C   |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |     |     |     |
+| 1   | NaN | 1   | ->  | 1   | Nan | 1   |     | 1   | 2   | 1   |
+| 2   | 2   | NaN |     | 2   | 2   | 1   |     | 2   | 2   | 4   |
+| NaN | 3   | NaN |     | 2   | 3   | 1   |     | 4   | 3   | 4   |
+| 4   | NaN | 4   |     | 4   | 3   |     |     | 4   | NaN | 4   |
 
 Supprimer les lignes contenant des valeurs manquantes
 
