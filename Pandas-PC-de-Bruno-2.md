@@ -35,6 +35,11 @@ import pandas as pd
 
 Il faut un seul type par colonne
 
+```python
+# Vérifier les types du dataframe
+print(df.dtypes)
+```
+
 ### 3 types principaux :
 - entiers  :      `Int8`, `Int16`, `Int32`, `Int64`. Peut gérer des valeurs manquantes (`NaN`)
 - décimaux :   `float32` ou `float64`
@@ -71,6 +76,65 @@ print(df.dtypes)
 ```
 ---
 ## Importer/export
+
+Lors de l'import, Pandas remplace automatiquement les valeurs manquantes par des `Nan`
+### Valeurs manquantes `NaN` et `Na`
+
+- **`NaN`** : Valeur flottante pour des données manquantes dans les **types numériques**.
+- **`NA`** : Valeur manquante pour les **types non numériques** (textes, catégories, etc.).
+
+valeur spéciale qui représente **"rien"** ou **"valeur manquante"**
+
+|                     | **`NaN`** (Not a Number)                       | **`NA`** (Not Available)                                                |
+| ------------------- | ---------------------------------------------- | ----------------------------------------------------------------------- |
+| **Type**            | Float                                          | Nullable (peut être pour `int`, `str`, etc.)                            |
+| **Utilisation**     | Principalement pour les données **numériques** | Principalement pour les données **catégorielles** ou **non numériques** |
+| **Comportement**    | `NaN != NaN`                                   | `NA == NA`                                                              |
+| **Type de données** | Généralement `float`                           | `pandas._libs.missing.NAType` (nullable)                                |
+
+| NaN                           | Not a Number                                         |
+| ----------------------------- | ---------------------------------------------------- |
+| `NaN != NaN`                  | Deux `NaN` ne sont **jamais égaux** entre eux        |
+| `type(np.nan)`                | `float`                                              |
+| `pd.isna(x)`<br>`np.isnan(x)` | Teste si une valeur est un `NaN`                     |
+| `np.nansum()`                 | somme de tous les éléments en **ignorant** les `NaN` |
+`Na`  
+- utilisé pour des **données non numériques** ou **catégorielles** ou **`object`**, `str`
+-  fait partie du type `pd.NA`, pour gérer de manière uniforme les valeurs manquantes.
+
+`fillna` remplace tous les NaN par :
+
+```python
+# 0
+df.fillna(0)
+# la dernière valeur connue (forward fill)
+df.fillna(method='ffill')
+# la prochaine valeur connue (backward fill)
+df.fillna(method='bfill')
+# la moyenne de chaque colonne
+df.fillna(df.mean())
+```
+
+DataFrame de 3 colonnes, 4 lignes, avec des valeurs manquantes :
+```python
+df = pd.DataFrame({
+    'A': [1, 2, np.nan, 4],
+    'B': [np.nan, 2, 3, np.nan],
+    'C': [1, np.nan, np.nan, 4]
+})
+```
+
+	Original        ->        ffill            ->        bfill
+
+| A   | B   | C   |     | A   | B   | C   |     | A   | B   | C   |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |     |     |     |
+| 1   | NaN | 1   | ->  | 1   | Nan | 1   |     | 1   | 2   | 1   |
+| 2   | 2   | NaN |     | 2   | 2   | 1   |     | 2   | 2   | 4   |
+| NaN | 3   | NaN |     | 2   | 3   | 1   |     | 4   | 3   | 4   |
+| 4   | NaN | 4   |     | 4   | 3   |     |     | 4   | NaN | 4   |
+
+
 ### Lecture de fichier texte ou excel 
 
 | options        | spécifie le séparateur                         |
@@ -185,7 +249,7 @@ resultats = pd.read_sql(requete, con=connexion)
 resultats.head()
 ```
 
-### Lecture de fichier au format [[JSON]]
+### Lecture de fichier au format .JSON
 format texte pour l'échange de données de manière structurée et légère
 
 ```python
@@ -604,6 +668,70 @@ ma_serie.iloc[:-2]
 # Seulement les 2 dernières valeurs
 ma_serie.iloc[-2:]
 ```
+
+### Méthodes des objets de classes `Series`
+[Doc](https://pandas.pydata.org/docs/reference/api/pandas.Series.html)
+
+| méthodes pour les séries |                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `describe()`             | affiche un résumé statistique sur les valeurs de la série :<br>`count`  nombre sans compter les valeurs manquante<br>`mean`    moyenne <br>`std`      déviation standard écart type<br>`min`      valeur minimum<br>`25%`      quartiles ,divise le données en 4 parts égales<br>`50%`      des individus font moins que la valeur<br>`75%`      des individus font moins que la valeur<br>`max`      valeur maximum |
+| `value_count()`          | visualise les valeurs uniques et leurs nombre                                                                                                                                                                                                                                                                                                                                                                        |
+| `replace()`              | remplace une ou +ieurs valeurs par une autre                                                                                                                                                                                                                                                                                                                                                                         |
+| `set_index()`            | redéfini les index                                                                                                                                                                                                                                                                                                                                                                                                   |
+
+
+
+
+
+### Ajouter, supprimer modifier des valeurs d'une `Serie`
+
+La méthode `append()`permet de concaténer des `Series`
+On donne un objet de type `Serie`à la méthode `append()`
+une liste de valeurs et une liste optionnelle d'index correspondant 
+
+Par sécurité, `append()`retourne une copie (un nouvel objet) et n'applique pas le traitement sur l'objet original
+
+On peut lui assigner le même nom pour forcer le changement de l'original
+
+```python
+ma_serie =
+ma_serie.append(pd.Series([liste_valeurs], index=["liste de label"]))
+```
+
+### Supprimer une valeur d'une `Serie`
+
+méthode `drop()`
+supprime les valeurs aux étiquettes d'index spécifié en option.
+
+```python
+ma_serie.drop(labels=["index_1", "index_2"], inplace=False)
+```
+
+| option `inplace` | n'existe pas dans la méthode `append()`            |            |
+| ---------------- | -------------------------------------------------- | ---------- |
+| `inplace=False`  | la modification est effectuée sur une copie        | par défaut |
+| `inplace=True`   | la modification est effectuée sur l'objet original |            |
+
+
+
+
+
+
+
+
+### Modifier les valeurs d'une `Serie`
+indexeurs `loc`et `iloc`
+```python
+ma_serie.loc["nom_index"] = nouvelle_valeur
+# ou
+ma_serie.loc["nom_index_1", "nom_index_2"] = [nouvelle_valeur_1, nouvelle_valeur_2]
+# ou
+ma_serie.iloc[position] = nouvelle_valeur
+```
+
+Avec `loc`, si un nom d'index a plusieurs occurences, elle seront toutes modifiées
+Avec `iloc`une seule occurence serait modifiée ( les positions sont unique )
+
 
 
 
