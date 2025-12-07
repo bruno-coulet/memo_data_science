@@ -216,12 +216,13 @@ mon_dataframe.to_csv("mes_resultats.csv", columns=["colonne_1", "colonne_5"])
 ---
 ## Valeur manquante : `NaN` vs. `NA`
 
-indicateurs de valeurs manquantes :
+
 - **NaN** (`Not a Number`) : valeur flottante pour les données de **types numériques**.
 - **NA** (`Not Available`) : pour les **types non numériques** (textes, catégories, etc.).
 
 
- **`NaN`** vient de [[NumPy]]  et est limité aux nombres (`float`).
+
+ **`NaN`** vient de **NumPy**  et est limité aux nombres (`float`).
 - **`pd.NA`** est plus flexible et fonctionne avec les types Pandas (`Int64`, `String`, `Boolean`).
 - Pandas recommande d’utiliser **`pd.NA`** pour une meilleure gestion des données manquantes.
 
@@ -238,7 +239,8 @@ indicateurs de valeurs manquantes :
 
 
 
-Contrairement à [[Numpy]], **`pandas.DataFrame.sum()` ignore les `NaN`par défaut** : calcule la somme en ignorant les `NaN`comme `np.nansum()`
+Contrairement à **Numpy**, **`pandas.DataFrame.sum()` ignore les `NaN`par défaut** :<br>
+calcule la somme en ignorant les `NaN`comme `np.nansum()`
 
 
 #### NaN (`numpy.nan`)
@@ -255,22 +257,23 @@ Contrairement à [[Numpy]], **`pandas.DataFrame.sum()` ignore les `NaN`par défa
 | `type(np.nan)`                | `float`                                              |
 | `pd.isna(x)`<br>`np.isnan(x)` | Teste si une valeur est un `NaN`                     |
 | `np.nansum()`                 | somme de tous les éléments en **ignorant** les `NaN` |
+
+
 `Na`  
 - utilisé pour des **données non numériques** ou **catégorielles** ou **`object`**, `str`
--  fait partie du type `pd.NA`, pour gérer de manière uniforme les valeurs manquantes.
+- fait partie du type `pd.NA`, pour gérer de manière uniforme les valeurs manquantes.
   
 
-    ```python
+```python
 df = pd.DataFrame({"A": [1, 2, np.nan, 4]})
-    ```
-     
-    ```
+
          A
     0  1.0
     1  2.0
     2  NaN
     3  4.0
-    ```
+```
+
 #### NA (`pd.NA`)
 
 - `Not Available` : Valeur manquante générique, introduite dans Pandas 1.0 pour gérer à la fois les types numériques et non numériques.
@@ -278,17 +281,15 @@ df = pd.DataFrame({"A": [1, 2, np.nan, 4]})
 - **Provenance** : Pandas (`pd.NA`)
 - **Meilleure compatibilité** avec les `Int64`, `String`, et `Boolean`
    
-    ```python
+```python
 df = pd.DataFrame({"A": [1, 2, pd.NA, 4]})
-    ```
 
-    ```
          A
     0    1
     1    2
     2  <NA>
     3    4
-    ```
+```
 
 	
 ### Gestion des NaN et NA
@@ -334,7 +335,7 @@ df = pd.DataFrame({
 | A   | B   | C   |     | A   | B   | C   |     | A   | B   | C   |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 |     |     |     |     |     |     |     |     |     |     |     |
-| 1   | NaN | 1   | ->  | 1   | Nan | 1   |     | 1   | 2   | 1   |
+| 1   | NaN | 1   | ->  | 1   | Nan | 1   | ->  | 1   | 2   | 1   |
 | 2   | 2   | NaN |     | 2   | 2   | 1   |     | 2   | 2   | 4   |
 | NaN | 3   | NaN |     | 2   | 3   | 1   |     | 4   | 3   | 4   |
 | 4   | NaN | 4   |     | 4   | 3   |     |     | 4   | NaN | 4   |
