@@ -208,7 +208,6 @@ mon_dataframe.to_csv("mes_resultats.csv")
 
 ```python
 mon_dataframe.to_csv("mes_resultats.csv", sep=";")
-# 
 mon_dataframe.to_csv("mes_resultats.csv", columns=["colonne_1", "colonne_5"])
 ```
 
@@ -236,13 +235,23 @@ Pandas recommande d’utiliser **`pd.NA`** pour une meilleure gestion des donné
 | **Type de données** | Généralement `float`        | `pandas._libs.missing.NAType` (nullable)           |
 
 
+| Caractéristique                 | `np.nan`     | `pd.NA`              |
+| ------------------------------- | ------------ | -------------------- |
+| Type                            | float        | type nullable Pandas |
+| Comparaison                     | `nan != nan` | renvoie `pd.NA`      |
+| Opérations mathématiques        | OK           | souvent erreur       |
+| Supporte dtypes nullable Pandas | ❌ non        | ✔️ oui               |
+| Détecté par `isna()`            | ✔️ oui       | ✔️ oui               |
+| Fonctionne dans `fillna()`      | ✔️           | ✔️                   |
 
+➡️ Pour la data science classique : np.nan suffit
+➡️ Pour garder des colonnes int ou bool avec NA : utiliser pd.NA
 
 Contrairement à **Numpy**, **`pandas.DataFrame.sum()` ignore les `NaN`par défaut** :<br>
 calcule la somme en ignorant les `NaN`comme `np.nansum()`
 
 
-#### NaN (`numpy.nan`)
+#### `NaN` (`numpy.nan`)
 
 - `Not a Number`
 	utilisé principalement pour représenter des valeurs numériques manquantes.
@@ -258,10 +267,6 @@ calcule la somme en ignorant les `NaN`comme `np.nansum()`
 | `np.nansum()`                 | somme de tous les éléments en **ignorant** les `NaN` |
 
 
-`Na`  
-- utilisé pour des **données non numériques** ou **catégorielles** ou **`object`**, `str`
-- fait partie du type `pd.NA`, pour gérer de manière uniforme les valeurs manquantes.
-  
 
 ```python
 df = pd.DataFrame({"A": [1, 2, np.nan, 4]})
@@ -275,10 +280,13 @@ df = pd.DataFrame({"A": [1, 2, np.nan, 4]})
 
 #### NA (`pd.NA`)
 
-- `Not Available` : Valeur manquante générique, introduite dans Pandas 1.0 pour gérer à la fois les types numériques et non numériques.
+- `Not Available` : Valeur manquante générique, introduite dans Pandas 1.0 pour gérer à la fois les types numériques et non numériques.<br>
+**données non numériques** ou **catégorielles** ou **`object`**, `str`
 - **Type** : `pd.NA` (au lieu de `float`)
 - **Provenance** : Pandas (`pd.NA`)
 - **Meilleure compatibilité** avec les `Int64`, `String`, et `Boolean`
+- fait partie du type `pd.NA`, pour gérer de manière uniforme les valeurs manquantes.
+  
    
 ```python
 df = pd.DataFrame({"A": [1, 2, pd.NA, 4]})
@@ -291,7 +299,15 @@ df = pd.DataFrame({"A": [1, 2, pd.NA, 4]})
 ```
 
 	
-### Gestion des NaN et NA
+### Gestion des `NaN` et `NA`
+
+Pandas a été conçu pour que ces fonctions traitent tous les types de valeurs manquantes :
+- `np.nan` (float NaN)
+- `None`
+- `pd.NA` (nouveau système NA de pandas)
+- `pd.NaT` (date manquante)
+
+→ Toutes sont détectées par `isna()` / `isnull()` et gérées par `fillna()` et `dropna()`
 
 Vérifier la présence de valeurs manquantes
 
