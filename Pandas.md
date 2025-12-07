@@ -217,14 +217,13 @@ mon_dataframe.to_csv("mes_resultats.csv", columns=["colonne_1", "colonne_5"])
 ## Valeur manquante : `NaN` vs. `NA`
 
 
-- **NaN** (`Not a Number`) : valeur flottante pour les données de **types numériques**.
+- **NaN** (`Not a Number`) vient de **NumPy** : valeur flottante limité aux **données numériques**.
 - **NA** (`Not Available`) : pour les **types non numériques** (textes, catégories, etc.).
 
 
-
- **`NaN`** vient de **NumPy**  et est limité aux nombres (`float`).
-- **`pd.NA`** est plus flexible et fonctionne avec les types Pandas (`Int64`, `String`, `Boolean`).
-- Pandas recommande d’utiliser **`pd.NA`** pour une meilleure gestion des données manquantes.
+Pandas recommande d’utiliser **`pd.NA`** pour une meilleure gestion des données manquantes :<br>
+**`pd.NA`** est plus flexible et fonctionne avec les types Pandas (`Int64`, `String`, `Boolean`).
+  
 
 |Caractéristique|`NaN` (`numpy.nan`)|`NA` (`pd.NA`)|
 |------------|----------------|--------------------|
