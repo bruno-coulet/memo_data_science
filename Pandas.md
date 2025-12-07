@@ -217,8 +217,9 @@ mon_dataframe.to_csv("mes_resultats.csv", columns=["colonne_1", "colonne_5"])
 ## Valeur manquante : `NaN` vs. `NA`
 
 indicateurs de valeurs manquantes :
-- **NaN** (`Not a Number`)
-- **NA** (`Not Available`) 
+- **NaN** (`Not a Number`) : valeur flottante pour les données de **types numériques**.
+- **NA** (`Not Available`) : pour les **types non numériques** (textes, catégories, etc.).
+
 
 
 ```python
