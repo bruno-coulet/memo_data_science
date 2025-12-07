@@ -226,23 +226,18 @@ Pandas recommande d’utiliser **`pd.NA`** pour une meilleure gestion des donné
 
 |Caractéristique|`NaN` (`numpy.nan`)|`NA` (`pd.NA`)|
 |------------|----------------|--------------------|
-|Type|`float`|`pd.NA` Nullable (peut être pour `int`, `str`, etc.)|
+|Type|`float`|`pd.NA` type nullable Pandas<br> (peut être pour `int`, `str`, etc.)|
 |Utilisé pour| données **numériques** |Principalement pour les données **catégorielles** ou **non numériques**|
 | **Comportement**    | `NaN != NaN`                          | `NA == NA`                                   |
-|Comparaison (`==`)|Toujours `False`, même `np.nan == np.nan`|Supporte `pd.NA == pd.NA` (renvoie `NA`)|
-|Conversion|Convertit les colonnes en `float`|Garde le type d'origine (ex: `Int64`, `String`)|
-|Support pour les booléens|Peut causer des erreurs|Compatible|
-| **Type de données** | Généralement `float`        | `pandas._libs.missing.NAType` (nullable)           |
-
-
-| Caractéristique                 | `np.nan`     | `pd.NA`              |
-| ------------------------------- | ------------ | -------------------- |
-| Type                            | float        | type nullable Pandas |
-| Comparaison                     | `nan != nan` | renvoie `pd.NA`      |
+|Comparaison (`==`)|Toujours `False`, même `np.nan == np.nan`|Supporte `pd.NA == pd.NA` (renvoie `pd.NA`)|
 | Opérations mathématiques        | OK           | souvent erreur       |
 | Supporte dtypes nullable Pandas | ❌ non        | ✔️ oui               |
 | Détecté par `isna()`            | ✔️ oui       | ✔️ oui               |
 | Fonctionne dans `fillna()`      | ✔️           | ✔️                   |
+|Conversion|Convertit les colonnes en `float`|Garde le type d'origine (ex: `Int64`, `String`)|
+|Support pour les booléens|Peut causer des erreurs|Compatible|
+| **Type de données** | Généralement `float`        | `pandas._libs.missing.NAType` (nullable)           |
+
 
 ➡️ Pour la data science classique : np.nan suffit
 ➡️ Pour garder des colonnes int ou bool avec NA : utiliser pd.NA
