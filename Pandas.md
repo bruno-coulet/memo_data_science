@@ -679,6 +679,69 @@ ma_serie.iloc[:-2]
 # Seulement les 2 dernières valeurs
 ma_serie.iloc[-2:]
 ```
+### Méthodes des objets de classes `Series`
+[Doc](https://pandas.pydata.org/docs/reference/api/pandas.Series.html)
+
+| méthodes pour les séries |                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `describe()`             | affiche un résumé statistique sur les valeurs de la série :<br>`count`  nombre sans compter les valeurs manquante<br>`mean`    moyenne <br>`std`      déviation standard écart type<br>`min`      valeur minimum<br>`25%`      quartiles ,divise le données en 4 parts égales<br>`50%`      des individus font moins que la valeur<br>`75%`      des individus font moins que la valeur<br>`max`      valeur maximum |
+| `value_count()`          | visualise les valeurs uniques et leurs nombre                                                                                                                                                                                                                                                                                                                                                                        |
+| `replace()`              | remplace une ou +ieurs valeurs par une autre                                                                                                                                                                                                                                                                                                                                                                         |
+| `set_index()`            | redéfini les index                                                                                                                                                                                                                                                                                                                                                                                                   |
+
+
+
+
+
+### Ajouter, supprimer modifier des valeurs d'une `Serie`
+
+La méthode `append()`permet de concaténer des `Series`
+On donne un objet de type `Serie`à la méthode `append()`
+une liste de valeurs et une liste optionnelle d'index correspondant 
+
+Par sécurité, `append()`retourne une copie (un nouvel objet) et n'applique pas le traitement sur l'objet original
+
+On peut lui assigner le même nom pour forcer le changement de l'original
+
+```python
+ma_serie =
+ma_serie.append(pd.Series([liste_valeurs], index=["liste de label"]))
+```
+
+### Supprimer une valeur d'une `Serie`
+
+méthode `drop()`
+supprime les valeurs aux étiquettes d'index spécifié en option.
+
+```python
+ma_serie.drop(labels=["index_1", "index_2"], inplace=False)
+```
+
+| option `inplace` | n'existe pas dans la méthode `append()`            |            |
+| ---------------- | -------------------------------------------------- | ---------- |
+| `inplace=False`  | la modification est effectuée sur une copie        | par défaut |
+| `inplace=True`   | la modification est effectuée sur l'objet original |            |
+
+
+
+
+
+
+
+
+### Modifier les valeurs d'une `Serie`
+indexeurs `loc`et `iloc`
+```python
+ma_serie.loc["nom_index"] = nouvelle_valeur
+# ou
+ma_serie.loc["nom_index_1", "nom_index_2"] = [nouvelle_valeur_1, nouvelle_valeur_2]
+# ou
+ma_serie.iloc[position] = nouvelle_valeur
+```
+
+Avec `loc`, si un nom d'index a plusieurs occurences, elle seront toutes modifiées
+Avec `iloc`une seule occurence serait modifiée ( les positions sont unique )
+
 
 
 
