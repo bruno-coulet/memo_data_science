@@ -184,7 +184,7 @@ resultats = pd.read_sql(requete, con=connexion)
 resultats.head()
 ```
 
-### Lecture de fichier au format [[JSON]]
+### Lecture de fichier au format `.json`
 format texte pour l'échange de données de manière structurée et légère
 
 ```python
@@ -208,7 +208,6 @@ mon_dataframe.to_csv("mes_resultats.csv")
 
 ```python
 mon_dataframe.to_csv("mes_resultats.csv", sep=";")
-# 
 mon_dataframe.to_csv("mes_resultats.csv", columns=["colonne_1", "colonne_5"])
 ```
 
@@ -216,71 +215,116 @@ mon_dataframe.to_csv("mes_resultats.csv", columns=["colonne_1", "colonne_5"])
 ---
 ## Valeur manquante : `NaN` vs. `NA`
 
-indicateurs de valeurs manquantes :
-- **NaN** (`Not a Number`)
-- **NA** (`Not Available`) 
+
+- **NaN** (`Not a Number`) de **NumPy** : valeur flottante limité aux **données numériques**.
+- **NA** (`Not Available`) de **Pandas**: pour les **types non numériques** (textes, catégories, etc.).
 
 
-```python
-# y a-t-il des NaN dans le DataFrame 
-df.isna().any()      # False ou True, colonne par colonne
-df.isna().any().any() # True si au moins un NaN quelque part
-```
+Pandas recommande d’utiliser **`pd.NA`** pour une meilleure gestion des données manquantes :<br>
+**`pd.NA`** est plus flexible et fonctionne avec les types Pandas (`Int64`, `String`, `Boolean`).
+  
 
- **`NaN`** vient de [[NumPy]]  et est limité aux nombres (`float`).
-- **`pd.NA`** est plus flexible et fonctionne avec les types Pandas (`Int64`, `String`, `Boolean`).
-- Pandas recommande d’utiliser **`pd.NA`** pour une meilleure gestion des données manquantes.
+| Caractéristique                       | `NaN` (`numpy.nan`)                        | `NA` (`pd.NA`)                                                     |
+| ------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------ |
+| **Type**                              | `float`                                    | `pandas._libs.missing.NAType` (nullable)                           |
+| **Utilisation principale**            | Données numériques                         | Données avec types *nullable* : `Int64`, `boolean`, `string`, etc. |
+| **Comportement logique**              | `np.nan != np.nan`                         | `pd.NA == pd.NA` → renvoie **`pd.NA`** (indéterminé)               |
+| **Comparaison (`==`)**                | Toujours `False` (même `np.nan == np.nan`) | Renvoie `pd.NA`, pas `True`                                        |
+| **Opérations mathématiques**          | OK → résultat : `nan`                      | Souvent **erreur** (`TypeError`)                                   |
+| **Support des dtypes nullable**       | ❌ Non                                      | ✅Oui                         |
+| **Détecté par `isna()` / `isnull()`** | ✅Oui                                     | ✅ Oui                          |
+| **Fonctionne avec `fillna()`**        | ✅                                        | ✅ Oui                          |
+| **Effet sur les dtypes**              | Force les colonnes en `float`              | Garde le type nullable d’origine (`Int64`, `boolean`, `string`)    |
+| **Compatibilité booléens**            | Problématique                              | Compatible avec `BooleanDtype()`                                   |
+| **Types de données typiques**         | Floats                                     | Nullable Pandas types                                              |
 
-|Caractéristique|`NaN` (`numpy.nan`)|`NA` (`pd.NA`)|
-|---|---|---|
-|Type|`float`|`pd.NA`|
-|Utilisé pour|Valeurs numériques manquantes|Valeurs numériques et non numériques|
-|Comparaison (`==`)|Toujours `False`, même `np.nan == np.nan`|Supporte `pd.NA == pd.NA` (renvoie `NA`)|
-|Conversion|Convertit les colonnes en `float`|Garde le type d'origine (ex: `Int64`, `String`)|
-|Support pour les booléens|Peut causer des erreurs|Compatible|
-Contrairement à [[Numpy]], **`pandas.DataFrame.sum()` ignore les `NaN`par défaut** : calcule la somme en ignorant les `NaN`comme `np.nansum()`
-#### NaN (`numpy.nan`)
+
+<br>
+➡️ Pour la data science classique : np.nan suffit<br>
+➡️ Pour garder des colonnes int ou bool avec NA : utiliser pd.NA
+
+Contrairement à **Numpy**, **`pandas.DataFrame.sum()` ignore les `NaN`par défaut** :<br>
+calcule la somme en ignorant les `NaN`comme `np.nansum()`
+
+### Machine learning `NaN`✅, `Na`❌ 
+Les bibliothèques ML attendent presque toutes des `NaN` :
+- scikit-learn
+- XGBoost
+- LightGBM
+- CatBoost
+- TensorFlow / Keras
+- PyTorch
+-statsmodels
+
+Toutes s’attendent explicitement à recevoir des `floats` et des `np.nan` pour représenter les valeurs manquantes<br>
+`pd.NA` n’est pas reconnu dans la majorité des modèles.
+
+
+
+#### `NaN` (`numpy.nan`)
 
 - `Not a Number`
 	utilisé principalement pour représenter des valeurs numériques manquantes.
 - **Type** : `float`
 - **Provenance** : `numpy.nan`
 
-    ```python
+
+| NaN                           | Not a Number                                         |
+| ----------------------------- | ---------------------------------------------------- |
+| `NaN != NaN`                  | Deux `NaN` ne sont **jamais égaux** entre eux        |
+| `type(np.nan)`                | `float`                                              |
+| `pd.isna(x)`<br>`np.isnan(x)` | Teste si une valeur est un `NaN`                     |
+| `np.nansum()`                 | somme de tous les éléments en **ignorant** les `NaN` |
+
+
+
+```python
 df = pd.DataFrame({"A": [1, 2, np.nan, 4]})
-    ```
-     
-    ```
+
          A
     0  1.0
     1  2.0
     2  NaN
     3  4.0
-    ```
+```
+
 #### NA (`pd.NA`)
 
-- `Not Available` : Valeur manquante générique, introduite dans Pandas 1.0 pour gérer à la fois les types numériques et non numériques.
+- `Not Available` : Valeur manquante générique, introduite dans Pandas 1.0 pour gérer à la fois les types numériques et non numériques.<br>
+**données non numériques** ou **catégorielles** ou **`object`**, `str`
 - **Type** : `pd.NA` (au lieu de `float`)
 - **Provenance** : Pandas (`pd.NA`)
 - **Meilleure compatibilité** avec les `Int64`, `String`, et `Boolean`
+- fait partie du type `pd.NA`, pour gérer de manière uniforme les valeurs manquantes.
+  
    
-    ```python
+```python
 df = pd.DataFrame({"A": [1, 2, pd.NA, 4]})
-    ```
 
-    ```
          A
     0    1
     1    2
     2  <NA>
     3    4
-    ```
-### Gestion des NaN et NA
+```
+
+	
+### Gestion des `NaN` et `NA`
+
+Pandas a été conçu pour que ces fonctions traitent tous les types de valeurs manquantes :
+- `np.nan` (float NaN)
+- `None`
+- `pd.NA` (nouveau système NA de pandas)
+- `pd.NaT` (date manquante)
+
+→ Toutes sont détectées par `isna()` / `isnull()` et gérées par `fillna()` et `dropna()`
 
 Vérifier la présence de valeurs manquantes
 
 ```python
 df.isna()  # Identique à df.isnull()
+df.isna().any()      # False ou True, colonne par colonne
+df.isna().any().any() # True si au moins un NaN quelque part
 ```
 
 Remplacer les valeurs manquantes
@@ -288,6 +332,38 @@ Remplacer les valeurs manquantes
 ```python
 df.fillna(0)  # Remplace NaN ou NA par 0
 ```
+
+`fillna` remplace tous les NaN par :
+
+```python
+# 0
+df.fillna(0)
+# la dernière valeur connue (forward fill)
+df.fillna(method='ffill')
+# la prochaine valeur connue (backward fill)
+df.fillna(method='bfill')
+# la moyenne de chaque colonne
+df.fillna(df.mean())
+```
+
+DataFrame de 3 colonnes, 4 lignes, avec des valeurs manquantes :
+```python
+df = pd.DataFrame({
+    'A': [1, 2, np.nan, 4],
+    'B': [np.nan, 2, 3, np.nan],
+    'C': [1, np.nan, np.nan, 4]
+})
+```
+
+	Original        ->        ffill            ->        bfill
+
+| A   | B   | C   |     | A   | B   | C   |     | A   | B   | C   |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |     |     |     |
+| 1   | NaN | 1   | ->  | 1   | Nan | 1   | ->  | 1   | 2   | 1   |
+| 2   | 2   | NaN |     | 2   | 2   | 1   |     | 2   | 2   | 4   |
+| NaN | 3   | NaN |     | 2   | 3   | 1   |     | 4   | 3   | 4   |
+| 4   | NaN | 4   |     | 4   | 3   |     |     | 4   | NaN | 4   |
 
 Supprimer les lignes contenant des valeurs manquantes
 
@@ -603,6 +679,69 @@ ma_serie.iloc[:-2]
 # Seulement les 2 dernières valeurs
 ma_serie.iloc[-2:]
 ```
+### Méthodes des objets de classes `Series`
+[Doc](https://pandas.pydata.org/docs/reference/api/pandas.Series.html)
+
+| méthodes pour les séries |                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `describe()`             | affiche un résumé statistique sur les valeurs de la série :<br>`count`  nombre sans compter les valeurs manquante<br>`mean`    moyenne <br>`std`      déviation standard écart type<br>`min`      valeur minimum<br>`25%`      quartiles ,divise le données en 4 parts égales<br>`50%`      des individus font moins que la valeur<br>`75%`      des individus font moins que la valeur<br>`max`      valeur maximum |
+| `value_count()`          | visualise les valeurs uniques et leurs nombre                                                                                                                                                                                                                                                                                                                                                                        |
+| `replace()`              | remplace une ou +ieurs valeurs par une autre                                                                                                                                                                                                                                                                                                                                                                         |
+| `set_index()`            | redéfini les index                                                                                                                                                                                                                                                                                                                                                                                                   |
+
+
+
+
+
+### Ajouter, supprimer modifier des valeurs d'une `Serie`
+
+La méthode `append()`permet de concaténer des `Series`
+On donne un objet de type `Serie`à la méthode `append()`
+une liste de valeurs et une liste optionnelle d'index correspondant 
+
+Par sécurité, `append()`retourne une copie (un nouvel objet) et n'applique pas le traitement sur l'objet original
+
+On peut lui assigner le même nom pour forcer le changement de l'original
+
+```python
+ma_serie =
+ma_serie.append(pd.Series([liste_valeurs], index=["liste de label"]))
+```
+
+### Supprimer une valeur d'une `Serie`
+
+méthode `drop()`
+supprime les valeurs aux étiquettes d'index spécifié en option.
+
+```python
+ma_serie.drop(labels=["index_1", "index_2"], inplace=False)
+```
+
+| option `inplace` | n'existe pas dans la méthode `append()`            |            |
+| ---------------- | -------------------------------------------------- | ---------- |
+| `inplace=False`  | la modification est effectuée sur une copie        | par défaut |
+| `inplace=True`   | la modification est effectuée sur l'objet original |            |
+
+
+
+
+
+
+
+
+### Modifier les valeurs d'une `Serie`
+indexeurs `loc`et `iloc`
+```python
+ma_serie.loc["nom_index"] = nouvelle_valeur
+# ou
+ma_serie.loc["nom_index_1", "nom_index_2"] = [nouvelle_valeur_1, nouvelle_valeur_2]
+# ou
+ma_serie.iloc[position] = nouvelle_valeur
+```
+
+Avec `loc`, si un nom d'index a plusieurs occurences, elle seront toutes modifiées
+Avec `iloc`une seule occurence serait modifiée ( les positions sont unique )
+
 
 
 
