@@ -239,8 +239,8 @@ Pandas recommande d’utiliser **`pd.NA`** pour une meilleure gestion des donné
 | **Types de données typiques**         | Floats                                     | Nullable Pandas types                                              |
 
 
-
-➡️ Pour la data science classique : np.nan suffit
+<br>
+➡️ Pour la data science classique : np.nan suffit<br>
 ➡️ Pour garder des colonnes int ou bool avec NA : utiliser pd.NA
 
 Contrairement à **Numpy**, **`pandas.DataFrame.sum()` ignore les `NaN`par défaut** :<br>
