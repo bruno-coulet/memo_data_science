@@ -184,7 +184,7 @@ resultats = pd.read_sql(requete, con=connexion)
 resultats.head()
 ```
 
-### Lecture de fichier au format [[JSON]]
+### Lecture de fichier au format `.json`
 format texte pour l'échange de données de manière structurée et légère
 
 ```python
@@ -220,13 +220,6 @@ indicateurs de valeurs manquantes :
 - **NaN** (`Not a Number`) : valeur flottante pour les données de **types numériques**.
 - **NA** (`Not Available`) : pour les **types non numériques** (textes, catégories, etc.).
 
-
-
-```python
-# y a-t-il des NaN dans le DataFrame 
-df.isna().any()      # False ou True, colonne par colonne
-df.isna().any().any() # True si au moins un NaN quelque part
-```
 
  **`NaN`** vient de [[NumPy]]  et est limité aux nombres (`float`).
 - **`pd.NA`** est plus flexible et fonctionne avec les types Pandas (`Int64`, `String`, `Boolean`).
@@ -282,6 +275,8 @@ Vérifier la présence de valeurs manquantes
 
 ```python
 df.isna()  # Identique à df.isnull()
+df.isna().any()      # False ou True, colonne par colonne
+df.isna().any().any() # True si au moins un NaN quelque part
 ```
 
 Remplacer les valeurs manquantes
