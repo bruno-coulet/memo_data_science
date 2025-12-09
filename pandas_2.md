@@ -268,7 +268,6 @@ mon_dataframe.to_csv("mes_resultats.csv")
 
 ```python
 mon_dataframe.to_csv("mes_resultats.csv", sep=";")
-# 
 mon_dataframe.to_csv("mes_resultats.csv", columns=["colonne_1", "colonne_5"])
 ```
 
