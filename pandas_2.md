@@ -35,11 +35,6 @@ import pandas as pd
 
 Il faut un seul type par colonne
 
-```python
-# Vérifier les types du dataframe
-print(df.dtypes)
-```
-
 ### 3 types principaux :
 - entiers  :      `Int8`, `Int16`, `Int32`, `Int64`. Peut gérer des valeurs manquantes (`NaN`)
 - décimaux :   `float32` ou `float64`
