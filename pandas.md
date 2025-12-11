@@ -154,100 +154,65 @@ Spécifier le type des colonnes avec un dictionnaire
 ```python
 pd.read_csv("fichier.csv", dtype{"colonne_1":"Int64", "colonne_2":"float64", "colonne_3":"object"})
 ```
+---
 
-#### Gestion des dates
+#### 📅 Gestion des dates : bonnes pratiques
 Parser = analyser la syntaxe d'un texte
 
 l'argument `parse_dates` indique quelles colonnes du fichier CSV doivent être interprétées comme des dates.
 Converti automatiquement des colonnes contenant des dates en objets **datetime**
-
-
-```python
-df = pd.read_csv("fichier", index_col='"Date", parse_dates=True)
-
-# colonne[4] (la 5eme) sera au format datetime64[ns]
-pd.read_csv("fichier.csv", parse_date=[4])
-```
-
----
-
-# 📅 Pandas — Gestion des dates : bonnes pratiques
-
-## 1. Charger un fichier CSV avec une colonne de dates comme index
+##### 1. Charger un fichier CSV avec une colonne de dates comme index
 
 ```python
-df = pd.read_csv(
-    "fichier.csv",
-    index_col="Date",      # La colonne 'Date' devient l'index du DataFrame
-    parse_dates=True       # Pandas convertit automatiquement cette colonne en datetime
-)
+# La colonne 'Date' devient l'index du DataFrame
+# Pandas convertit automatiquement cette colonne en datetime
+df = pd.read_csv(    "fichier.csv",index_col="Date", parse_dates=True)
 ```
-
-### ✅ Commentaire
 
 * `index_col="Date"` est idéal pour des séries temporelles.
 * `parse_dates=True` dit à Pandas de détecter les dates dans l'index.
 * Le type obtenu est : `datetime64[ns]`.
 
----
 
-## 2. Convertir une colonne spécifique en datetime lors du chargement
+##### 2. Convertir une colonne spécifique en datetime lors du chargement
 
 ```python
-df = pd.read_csv(
-    "fichier.csv",
-    parse_dates=[4]        # Convertit la 5ème colonne (index 4) en datetime64[ns]
-)
+# Convertit la 5ème colonne (index 4) en datetime64[ns]
+df = pd.read_csv("fichier.csv", parse_dates=[4])
 ```
-
-### ✅ Commentaire
 
 * `parse_dates=[4]` permet de convertir uniquement certaines colonnes.
 * Utile si le fichier a plusieurs colonnes date et que tu veux garder le contrôle.
 * Évite les mauvaises interprétations si certaines colonnes ressemblent à des dates sans en être !
 
----
 
-## 3. Convertir une colonne en datetime après chargement
-
-```python
-df["Date"] = pd.to_datetime(df["Date"])
-```
-
-### Bonnes pratiques :
-
-* Toujours utiliser `pd.to_datetime()` plutôt que `astype("datetime")`.
-* Gère beaucoup plus de formats automatiquement, et détecte les erreurs.
-
----
-
-## 4. Forcer un format de date (important en FR / international)
-
+##### 3. Convertir une colonne en datetime après chargement
+ `format` permet de forcer un format de date (FR / international)
 ```python
 df["Date"] = pd.to_datetime(df["Date"], format="%d/%m/%Y")
 ```
 
-### Pourquoi ?
+###### Bonnes pratiques :
 
-* Si ton fichier est français (`31/12/2023`), Pandas peut se tromper.
+* Toujours utiliser `pd.to_datetime()` plutôt que `astype("datetime")`.
+* Gère beaucoup plus de formats automatiquement, et détecte les erreurs.
+* Si le fichier est français (`31/12/2023`), Pandas peut se tromper.
 * `format` rend la conversion **plus rapide** et **plus fiable**.
 
----
 
-## 5. Gérer les erreurs de parsing proprement
+##### 4. Gérer les erreurs de parsing proprement
 
 ```python
 df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
 ```
 
-### Effet :
+###### Effet :
 
 * Les dates invalides deviennent `NaT` (équivalent de NaN pour les dates).
 * Très utile pour nettoyer des fichiers Excel ou CSV mal formés.
 
----
 
-## 6. Extraire des informations temporelles utiles
+##### 5. Extraire des informations temporelles utiles
 
 ```python
 df["Année"] = df["Date"].dt.year
@@ -257,9 +222,8 @@ df["Semaine"] = df["Date"].dt.isocalendar().week
 df["Jour_sem"] = df["Date"].dt.day_name()   # Monday, Tuesday…
 ```
 
----
 
-## 7. Trier par date (toujours nécessaire)
+##### 6. Trier par date (toujours nécessaire)
 
 ```python
 df = df.sort_values("Date")
@@ -271,9 +235,8 @@ Indispensable avant :
 * du resampling
 * des calculs glissants (rolling)
 
----
 
-## 8. Résampling (très utile en time-series)
+##### 7. Résampling (très utile en time-series)
 
 ```python
 df.resample("M").mean()   # données mensuelles
@@ -281,9 +244,7 @@ df.resample("W").sum()    # données hebdomadaires
 df.resample("D").ffill()  # remplissage avant
 ```
 
----
-
-## 9. Identifier les fréquences temporelles
+##### 8. Identifier les fréquences temporelles
 
 ```python
 pd.infer_freq(df.index)
@@ -292,14 +253,12 @@ pd.infer_freq(df.index)
 Retourne `"D"`, `"M"`, `"H"`, etc.
 ✔ Très utile pour vérifier que l’index est uniforme.
 
----
-
 
 🔹 la gestion desFuseaux horaires (`tz_localize`, `tz_convert`)
 🔹 les dates irrégulières
 🔹 les time deltas (`Timedelta`)
 
-
+---
 
 #### option `sheet_name`
 Pour importer une autre feuille que la 1ère du fichier excel
